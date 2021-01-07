@@ -1,0 +1,19 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'build', '-t', 'asia.gcr.io/[projectId]/[docker-name]', '.' ]
+  # Push the container image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'push', 'asia.gcr.io/[projectId]/[docker-name]' ]
+  #  Deploy container image to Cloud Run
+  - name: 'google/cloud-sdk:slim'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - '[docker-name]'
+      - '--image=asia.gcr.io/[projectId]/[docker-name]'
+      - '--region=[region-name]'
+      - '--platform=managed'
+      - '--allow-unauthenticated'
+images:
+  - asia.gcr.io/[projectId]/[docker-name]
